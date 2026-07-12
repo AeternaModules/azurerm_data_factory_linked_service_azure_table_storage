@@ -1,7 +1,12 @@
+data "azurerm_key_vault_secret" "connection_string" {
+  for_each     = { for k, v in var.data_factory_linked_service_azure_table_storages : k => v if v.connection_string_key_vault_id != null && v.connection_string_key_vault_secret_name != null }
+  name         = each.value.connection_string_key_vault_secret_name
+  key_vault_id = each.value.connection_string_key_vault_id
+}
 resource "azurerm_data_factory_linked_service_azure_table_storage" "data_factory_linked_service_azure_table_storages" {
   for_each = var.data_factory_linked_service_azure_table_storages
 
-  connection_string        = each.value.connection_string
+  connection_string        = each.value.connection_string != null ? each.value.connection_string : try(data.azurerm_key_vault_secret.connection_string[each.key].value, null)
   data_factory_id          = each.value.data_factory_id
   name                     = each.value.name
   additional_properties    = each.value.additional_properties

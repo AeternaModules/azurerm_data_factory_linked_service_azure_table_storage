@@ -3,6 +3,8 @@ variable "data_factory_linked_service_azure_table_storages" {
 Map of data_factory_linked_service_azure_table_storages, attributes below
 Required:
     - connection_string
+    - connection_string_key_vault_id (alternative to connection_string - read from Key Vault instead)
+    - connection_string_key_vault_secret_name (alternative to connection_string - read from Key Vault instead)
     - data_factory_id
     - name
 Optional:
@@ -14,14 +16,16 @@ Optional:
 EOT
 
   type = map(object({
-    connection_string        = string
-    data_factory_id          = string
-    name                     = string
-    additional_properties    = optional(map(string))
-    annotations              = optional(list(string))
-    description              = optional(string)
-    integration_runtime_name = optional(string)
-    parameters               = optional(map(string))
+    connection_string                       = string
+    connection_string_key_vault_id          = optional(string)
+    connection_string_key_vault_secret_name = optional(string)
+    data_factory_id                         = string
+    name                                    = string
+    additional_properties                   = optional(map(string))
+    annotations                             = optional(list(string))
+    description                             = optional(string)
+    integration_runtime_name                = optional(string)
+    parameters                              = optional(map(string))
   }))
   validation {
     condition = alltrue([
